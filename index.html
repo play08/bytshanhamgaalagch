@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Бяцхан Хамгаалагч</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f3f6f4;--surface:#fff;--ink:#14231e;--muted:#5d6f68;--line:#d9e2de;--brand:#0f5c4a;--brand-ink:#fff;--accent:#f0b429;--danger:#b3261e;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1714;--surface:#16231f;--ink:#e8f1ed;--muted:#97aaa2;--line:#27382f;--brand:#3fb58f;--brand-ink:#06211a;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e1714;--surface:#16231f;--ink:#e8f1ed;--muted:#97aaa2;--line:#27382f;--brand:#3fb58f;--brand-ink:#06211a;color-scheme:dark}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Manrope',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;line-height:1.5}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--brand);color:var(--brand-ink);display:flex;gap:12px;align-items:center;padding:12px 16px}
+header h1{font-size:1.15rem;margin:0;font-weight:800;white-space:nowrap}
+#q{flex:1;min-width:0;padding:10px 14px;border-radius:8px;border:0;background:var(--surface);color:var(--ink)}
+.cartbtn{background:var(--accent);color:#2b1d00;border:0;border-radius:8px;padding:10px 14px;font-weight:800;white-space:nowrap}
+main{max-width:1100px;margin:0 auto;padding:16px}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:16px}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 14px}
+.chip[aria-pressed="true"]{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
+select{margin-left:auto;padding:6px 10px;border-radius:8px;border:1px solid var(--line);background:var(--surface)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column}
+.pic{height:130px;display:grid;place-items:center;font-size:3.4rem}
+.info{padding:12px;display:flex;flex-direction:column;gap:4px;flex:1}
+.info h3{margin:0;font-size:1rem}
+.info small{color:var(--muted)}
+.price{font-weight:800;font-size:1.1rem;margin-top:auto;padding-top:6px}
+.add{margin-top:8px;border:0;border-radius:8px;background:var(--brand);color:var(--brand-ink);padding:9px;font-weight:600}
+.empty{color:var(--muted);padding:40px 0;text-align:center}
+#shade{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;z-index:6}
+#drawer{position:fixed;top:0;right:0;bottom:0;width:min(420px,100%);background:var(--surface);z-index:7;transform:translateX(100%);transition:transform .25s;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body.open #drawer{transform:none}
+body.open #shade{display:block}
+.dh{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid var(--line)}
+.dh h2{margin:0;font-size:1.1rem}
+.x{background:none;border:0;font-size:1.5rem;line-height:1}
+#items{flex:1;overflow:auto;padding:8px 16px}
+.row{display:grid;grid-template-columns:44px 1fr auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.row .e{font-size:1.8rem;text-align:center}
+.qty{display:flex;align-items:center;gap:6px;margin-top:4px}
+.qty button{width:28px;height:28px;border-radius:6px;border:1px solid var(--line);background:var(--bg)}
+.rm{background:none;border:0;color:var(--danger);font-size:.85rem}
+.foot{padding:14px 16px;border-top:1px solid var(--line)}
+.total{display:flex;justify-content:space-between;font-weight:800;font-size:1.15rem;margin-bottom:10px}
+.go{width:100%;border:0;border-radius:8px;background:var(--brand);color:var(--brand-ink);padding:12px;font-weight:800}
+.go:disabled{opacity:.4;cursor:not-allowed}
+.f{display:flex;flex-direction:column;gap:10px}
+.f label{display:flex;flex-direction:column;gap:4px;font-size:.9rem;color:var(--muted)}
+.f input,.f select{padding:10px;border-radius:8px;border:1px solid var(--line);background:var(--bg);margin:0;color:var(--ink)}
+.err{color:var(--danger);font-size:.85rem;min-height:1.2em}
+.done{text-align:center;padding:30px 16px}
+.done .big{font-size:3rem}
+</style>
+</head>
+<body>
+<header>
+  <h1>🛡️ Бяцхан Хамгаалагч</h1>
+  <input id="q" type="search" placeholder="Хүүхдийн хамгаалах хэрэгсэл хайх..." aria-label="Бараа хайх">
+  <button class="cartbtn" id="open" aria-label="Сагс нээх">Сагс (<span id="cnt">0</span>)</button>
+</header>
+<main>
+  <div class="bar" id="cats"></div>
+  <div class="bar" style="margin-top:-6px"><span id="found" style="color:var(--muted)"></span>
+    <select id="sort" aria-label="Эрэмбэлэх">
+      <option value="def">Эрэмбэ: анхны</option>
+      <option value="asc">Үнэ: багаас их</option>
+      <option value="desc">Үнэ: ихээс бага</option>
+    </select>
+  </div>
+  <div class="grid" id="grid"></div>
+</main>
+<div id="shade"></div>
+<aside id="drawer" aria-label="Сагс">
+  <div class="dh"><h2 id="dtitle">Таны сагс</h2><button class="x" id="close" aria-label="Хаах">×</button></div>
+  <div id="items"></div>
+  <div class="foot" id="foot"></div>
+</aside>
+
+<script>
+/* ===== ТОХИРГОО: энд өөрийн мэдээллээ засна ===== */
+const CONFIG={bank:'Хаан банк',account:'5000 000 000',owner:'Бяцхан Хамгаалагч ХХК',phone:'99112233'};
+/* Бараа нэмэх/засах: img талбарт зургийн холбоос (https://...) бичвэл emoji-н оронд зураг гарна */
+const PRODUCTS=[
+ {id:1,n:'Хүүхдийн машины суудал',c:'Машин',p:289000,e:'🚗',bg:'#cfe3da',d:'0-4 нас, ISOFIX бэхэлгээтэй',img:''},
+ {id:2,n:'Машины цонхны наалт (2 ш)',c:'Машин',p:18000,e:'☀️',bg:'#f3dcc0',d:'Нарны хамгаалалт',img:''},
+ {id:3,n:'Шатны аюулгүйн хаалт',c:'Гэр дотор',p:59000,e:'🚪',bg:'#d3dcf0',d:'Шат, хаалганы хаалт',img:''},
+ {id:4,n:'Булангийн зөөлөн хамгаалалт (8 ш)',c:'Гэр дотор',p:15000,e:'🧸',bg:'#f5e8b8',d:'Ширээний булан, тогтвортой наалттай',img:''},
+ {id:5,n:'Розетк таг (10 ш)',c:'Гэр дотор',p:9000,e:'🔌',bg:'#e5cfc6',d:'Цахилгааны аюулаас хамгаална',img:''},
+ {id:6,n:'Шүүгээний түгжээ (6 ш)',c:'Гэр дотор',p:14000,e:'🔒',bg:'#d6ead3',d:'Шүүгээ, шургуулга',img:''},
+ {id:7,n:'Хүүхдийн монитор',c:'Хяналт',p:189000,e:'📹',bg:'#dfd3ee',d:'Камертай, дуу хоолойн дохиотой',img:''},
+ {id:8,n:'Усны температур хэмжигч',c:'Хяналт',p:12000,e:'🌡️',bg:'#d0d8d6',d:'Угаалгын усыг аюулгүй байлгана',img:''}
+];
+const $=s=>document.querySelector(s);
+const fmt=n=>n.toLocaleString('mn-MN').replace(/,/g,' ')+'₮';
+let cart={},cat='Бүгд',view='cart'; // cart = {id:qty}
+try{cart=JSON.parse(localStorage.getItem('cart')||'{}')||{}}catch(e){cart={}}
+const save=()=>{try{localStorage.setItem('cart',JSON.stringify(cart))}catch(e){}};
+const count=()=>Object.values(cart).reduce((a,b)=>a+b,0);
+const total=()=>Object.entries(cart).reduce((s,[id,q])=>s+PRODUCTS.find(p=>p.id==id).p*q,0);
+
+function renderCats(){
+  const cs=['Бүгд',...new Set(PRODUCTS.map(p=>p.c))];
+  $('#cats').innerHTML=cs.map(c=>`<button class="chip" aria-pressed="${c===cat}" data-c="${c}">${c}</button>`).join('');
+}
+function renderGrid(){
+  const q=$('#q').value.trim().toLowerCase(),s=$('#sort').value;
+  let list=PRODUCTS.filter(p=>(cat==='Бүгд'||p.c===cat)&&(p.n+p.d).toLowerCase().includes(q));
+  if(s==='asc')list.sort((a,b)=>a.p-b.p);if(s==='desc')list.sort((a,b)=>b.p-a.p);
+  $('#found').textContent=list.length+' бараа';
+  $('#grid').innerHTML=list.length?list.map(p=>`<article class="card"><div class="pic" style="background:${p.bg}" aria-hidden="true">${p.img?`<img src="${p.img}" alt="" style="width:100%;height:100%;object-fit:cover">`:p.e}</div><div class="info"><small>${p.c}</small><h3>${p.n}</h3><small>${p.d}</small><div class="price">${fmt(p.p)}</div><button class="add" data-add="${p.id}">Сагсанд нэмэх</button></div></article>`).join(''):'<p class="empty" style="grid-column:1/-1">Хайлтад тохирох бараа олдсонгүй. Өөр үгээр хайж үзнэ үү.</p>';
+}
+function renderCart(){
+  $('#cnt').textContent=count();
+  const ids=Object.keys(cart);
+  if(view==='done')return;
+  if(view==='checkout'){renderCheckout();return}
+  $('#dtitle').textContent='Таны сагс';
+  $('#items').innerHTML=ids.length?ids.map(id=>{const p=PRODUCTS.find(x=>x.id==id),q=cart[id];return `<div class="row"><div class="e">${p.e}</div><div><strong>${p.n}</strong><div class="qty"><button data-dec="${id}" aria-label="Хасах">−</button><span>${q}</span><button data-inc="${id}" aria-label="Нэмэх">+</button></div></div><div style="text-align:right"><div>${fmt(p.p*q)}</div><button class="rm" data-rm="${id}">Устгах</button></div></div>`}).join(''):'<p class="empty">Сагс хоосон байна. Барааг сонгоод "Сагсанд нэмэх" дарна уу.</p>';
+  $('#foot').innerHTML=`<div class="total"><span>Нийт</span><span>${fmt(total())}</span></div><button class="go" id="tocheckout" ${ids.length?'':'disabled'}>Захиалга өгөх</button>`;
+}
+function renderCheckout(){
+  $('#dtitle').textContent='Захиалгын мэдээлэл';
+  $('#items').innerHTML=`<form class="f" id="form" novalidate>
+   <label>Нэр<input name="name" autocomplete="name"></label>
+   <label>Утасны дугаар<input name="phone" inputmode="tel" autocomplete="tel" placeholder="99112233"></label>
+   <label>Хаяг (дүүрэг, хороо, байр, тоот)<input name="addr" autocomplete="street-address"></label>
+   <label>Төлбөрийн хэлбэр<select name="pay"><option>QPay (QR кодоор)</option><option>Дансны шилжүүлэг</option></select></label><p style="margin:0;font-size:.85rem;color:var(--muted)">Төлбөр төлөгдсөний дараа л хүргэлтэд гарна.</p>
+   <div class="err" id="err" role="alert"></div></form>`;
+  $('#foot').innerHTML=`<div class="total"><span>Нийт</span><span>${fmt(total())}</span></div><button class="go" id="place">Захиалга баталгаажуулах</button><button class="rm" id="back" style="margin-top:8px">← Сагс руу буцах</button>`;
+}
+function place(){
+  const f=new FormData($('#form')),name=(f.get('name')||'').trim(),phone=(f.get('phone')||'').trim(),addr=(f.get('addr')||'').trim();
+  if(!name||!addr){$('#err').textContent='Нэр болон хаягаа бөглөнө үү.';return}
+  if(!/^\d{8}$/.test(phone.replace(/\s/g,''))){$('#err').textContent='Утасны дугаар 8 оронтой байх ёстой.';return}
+  const no='№'+Math.floor(100000+Math.random()*900000),sum=total();
+  cart={};save();view='done';
+  const qp=(f.get('pay')||'').startsWith('QPay');
+  $('#dtitle').textContent='Төлбөр хүлээгдэж байна';
+  $('#items').innerHTML=`<div class="done"><div class="big">⏳</div><h3>Захиалга бүртгэгдлээ ${no}</h3><p>Хүргэлтэд гаргахын өмнө <strong>${fmt(sum)}</strong> төлнө үү.</p>${qp?`<div style="margin:14px auto;width:180px;height:180px;border:2px dashed var(--line);border-radius:12px;display:grid;place-items:center;color:var(--muted);font-size:.85rem;padding:10px">QPay QR энд гарна</div>`:''}<div style="text-align:left;background:var(--bg);border-radius:10px;padding:12px;font-size:.95rem"><div>Банк: <strong>${CONFIG.bank}</strong></div><div>Данс: <strong>${CONFIG.account}</strong></div><div>Хүлээн авагч: <strong>${CONFIG.owner}</strong></div><div>Гүйлгээний утга: <strong>${no}</strong></div></div><p style="color:var(--muted);font-size:.9rem">${name}, төлбөр орсон даруйд ${phone} дугаараар холбогдож хүргэлтийг баталгаажуулна. Асуух зүйл: ${CONFIG.phone}</p></div>`;
+  $('#foot').innerHTML='<button class="go" id="cont">Дэлгүүр рүү буцах</button>';
+  $('#cnt').textContent=0;
+}
+const setOpen=o=>{document.body.classList.toggle('open',o);if(o){view=count()||view==='done'?view:'cart';if(view==='done'&&!document.querySelector('.done'))view='cart';renderCart()}};
+document.addEventListener('click',e=>{
+  const t=e.target,d=k=>t.dataset[k];
+  if(d('c')){cat=d('c');renderCats();renderGrid()}
+  else if(d('add')){cart[d('add')]=(cart[d('add')]||0)+1;save();$('#cnt').textContent=count();t.textContent='Нэмэгдлээ ✓';setTimeout(()=>t.textContent='Сагсанд нэмэх',900)}
+  else if(d('inc')){cart[d('inc')]++;save();renderCart()}
+  else if(d('dec')){if(--cart[d('dec')]<=0)delete cart[d('dec')];save();renderCart()}
+  else if(d('rm')){delete cart[d('rm')];save();renderCart()}
+  else if(t.id==='open'||t.closest('#open')){view='cart';setOpen(true)}
+  else if(t.id==='close'||t.id==='shade')setOpen(false);
+  else if(t.id==='tocheckout'){view='checkout';renderCart()}
+  else if(t.id==='back'){view='cart';renderCart()}
+  else if(t.id==='place')place();
+  else if(t.id==='cont'){view='cart';setOpen(false)}
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')setOpen(false)});
+$('#q').addEventListener('input',renderGrid);$('#sort').addEventListener('change',renderGrid);
+renderCats();renderGrid();renderCart();
+</script>
+</body>
+</html>
